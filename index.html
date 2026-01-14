@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>🌸 淇淇与加盐的小红花仓库 🌸</title>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
     <style>
         :root {
             --main-pink: #ffafbd;
@@ -52,14 +53,26 @@
             color: var(--dark-pink);
             font-size: 1.5rem;
             font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .level-title {
+            display: inline-block;
+            background: linear-gradient(135deg, #fff0f3, #ffe0e6);
+            color: var(--dark-pink);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: bold;
             margin-bottom: 10px;
+            animation: floating 2s ease-in-out infinite;
         }
 
         .flower-display {
             display: flex;
             justify-content: center;
             align-items: baseline;
-            margin: 15px 0;
+            margin: 10px 0;
         }
 
         .flower-count {
@@ -76,26 +89,91 @@
             font-weight: bold;
         }
 
-        /* 增加按钮 */
+        .btn-group {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 15px;
+        }
+
         .btn-add {
             background: linear-gradient(135deg, var(--main-pink), var(--dark-pink));
             color: white;
             border: none;
-            padding: 15px 40px;
+            padding: 12px 30px;
             border-radius: 50px;
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             font-weight: bold;
             cursor: pointer;
             box-shadow: 0 5px 15px rgba(255, 107, 129, 0.3);
             transition: all 0.2s;
+        }
+
+        .btn-reduce {
+            background: white;
+            color: var(--main-pink);
+            border: 2px solid var(--main-pink);
+            padding: 12px 20px;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        /* 兑换记录样式 */
+        .log-section {
+            background: white;
+            border-radius: 20px;
+            padding: 20px;
+            margin: 20px 0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+
+        .log-list {
+            max-height: 200px;
+            overflow-y: auto;
             margin-top: 10px;
         }
 
-        .btn-add:active {
-            transform: scale(0.95);
+        .log-item {
+            font-size: 0.85rem;
+            padding: 10px 0;
+            border-bottom: 1px dashed #eee;
+            color: #666;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
-        /* 奖励列表 */
+        .log-content {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .log-time { color: #bbb; font-size: 0.75rem; }
+
+        .btn-delete-log {
+            background-color: #fff0f3;
+            color: var(--dark-pink);
+            border: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.2s;
+        }
+
+        .btn-delete-log:hover {
+            background-color: var(--dark-pink);
+            color: white;
+        }
+
         .reward-section-title {
             text-align: center;
             color: var(--dark-pink);
@@ -111,7 +189,6 @@
             display: flex;
             flex-direction: column;
             box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-            transition: 0.3s;
             border-left: 8px solid var(--main-pink);
         }
 
@@ -131,13 +208,6 @@
             font-size: 0.9rem;
         }
 
-        .reward-content {
-            font-size: 0.95rem;
-            line-height: 1.6;
-            color: #555;
-            white-space: pre-line; /* 保留换行 */
-        }
-
         .btn-redeem {
             align-self: flex-end;
             background-color: var(--main-pink);
@@ -148,21 +218,21 @@
             cursor: pointer;
             margin-top: 15px;
             font-weight: bold;
-            transition: 0.3s;
         }
 
         .btn-redeem:disabled {
             background-color: #eee;
             color: #bbb;
-            cursor: not-allowed;
         }
 
-        .btn-redeem.special-btn {
-            background-color: #f1f1f1;
-            color: #999;
+        @keyframes floating {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-5px); }
+            100% { transform: translateY(0px); }
         }
 
-        /* 隐藏规则 */
+        .main-flower-img { animation: floating 3s ease-in-out infinite; }
+
         .rules-card {
             background: #fff0f3;
             border-radius: 20px;
@@ -172,22 +242,6 @@
             font-size: 0.9rem;
             line-height: 1.8;
         }
-
-        .rules-title {
-            color: var(--dark-pink);
-            font-weight: bold;
-            text-align: center;
-            margin-bottom: 10px;
-            display: block;
-        }
-
-        /* 动画 */
-        @keyframes float {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); }
-            100% { transform: translateY(0px); }
-        }
-        .main-flower-img { animation: float 3s ease-in-out infinite; }
     </style>
 </head>
 <body>
@@ -196,24 +250,36 @@
     <div class="header-card">
         <span class="main-flower-img">🌸</span>
         <div class="title">淇淇与加盐的小红花仓库</div>
+        <div id="levelBadge" class="level-title">初级乖乖宝贝</div>
+
         <div class="flower-display">
             <div class="flower-count" id="totalCount">0</div>
             <div class="flower-unit">朵小红花</div>
         </div>
-        <button class="btn-add" onclick="addFlower()">点击获得 🌸 +1</button>
-        <p style="font-size: 0.8rem; color: #999; margin-top: 15px;">淇淇和加盐乖乖的小红花奖励制度~</p>
+
+        <div class="btn-group">
+            <button class="btn-reduce" onclick="changeFlower(-1)">减少 🌸 -1</button>
+            <button class="btn-add" onclick="changeFlower(1)">点击获得 🌸 +1</button>
+        </div>
+    </div>
+
+    <div class="log-section">
+        <div style="font-weight: bold; color: var(--dark-pink); display: flex; align-items: center; justify-content: space-between;">
+            <span>📜 兑换记录</span>
+            <span style="font-size: 0.7rem; color: #ccc; font-weight: normal;">记录最近的甜蜜瞬间</span>
+        </div>
+        <div id="logList" class="log-list">
+            <div style="text-align:center; color:#ccc; padding:20px; font-size:0.8rem;">还没有记录哦~</div>
+        </div>
     </div>
 
     <div class="reward-section-title">—— 奖励兑换区 ——</div>
-    
-    <div id="rewardContainer">
-        </div>
+    <div id="rewardContainer"></div>
 
     <div class="rules-card">
-        <span class="rules-title">🌸【隐藏规则】🌸</span>
+        <span style="color:var(--dark-pink); font-weight:bold; display:block; text-align:center; margin-bottom:10px;">🌸【隐藏规则】🌸</span>
         小红花可以累计、不清零，但是有可能会触发扣除机制哦~<br>
         特殊表现优秀时，淇淇有权额外奖励小红花<br>
-        部分奖励可能触发隐藏加成（比如惊喜升级）<br>
         本制度长期有效，解释权归淇淇 & 加盐宝贝共同所有
     </div>
     
@@ -221,8 +287,7 @@
 </div>
 
 <script>
-    // 奖励原始数据
-    const rewardData = [
+     const rewardData = [
         { cost: 1, text: "一次小奖励！可以让淇淇给加盐宝贝买好喝的奶茶，好吃的小蛋糕，面包等等~" },
         { cost: 2, text: "指定一次“今天你说了算”，可以让淇淇给加盐宝贝完成一件事情，不做限制哦！或者也可以在约会的时候可以指定一次今天去哪吃，或者今天看什么，或者想去抓娃娃啊，逛美食街啊，想看的电影啊，以及抖音刷到了有很想去的店然后想叫淇淇一起去打卡呀之类的，只要兑换，见面一定满足~" },
         { cost: 5, text: "一次小礼物~包括但不限于想要的玩偶，情侣小礼物呀~（对戒/手绳/钥匙扣）之类的" },
@@ -234,7 +299,7 @@
         { cost: 10, text: "一个中等奖励，近期加盐宝贝购物车随机一件中等范围内报销!" },
         { cost: 10, text: "加盐宝贝特别想要的化妆品或者护肤品一件" },
         { cost: 12, text: "专属纪念日自定义\n加盐宝贝可以自定义一个我们的小纪念日，淇淇需在每年/每次认真对待\n不可敷衍、不许忘记" },
-        { cost: 15, text: "约会额外项目，如泡温泉啊，短途小旅行啊~之类的，有很大的扩展性哦~可以自己想想一下" },
+        { cost: 15, text: "约会额外项目，如泡温泉啊，短途小旅行啊~之类的，有很大的扩展性哦~可以自己想想一下（特殊添加：鉴于淇淇最近刷到环球了感觉特别喜欢，所以添加上北京环球和迪士尼，不过这两个小红花价格调整为20哦~嘿嘿）" },
         { cost: 15, text: "加盐宝贝可以给淇淇提一个生活方式或者习惯的要求！淇淇会根据要求进行调整~" },
         { cost: 18, text: "一次高级浪漫约会！比普通约会更正式、更有仪式感" },
         { cost: 20, text: "一个大奖励，非任何节日也可以兑换，给加盐宝贝购物车内随机一件想要的但是没舍得买的淇淇报销！或者可以兑换物品，淇淇给加盐宝贝买，如我想要个手链，我想要个首饰，想要个戒指~之类的，或者有喜欢的衣服但是还没买的，报销！" },
@@ -242,56 +307,114 @@
     ];
 
     let count = parseInt(localStorage.getItem('flower_count')) || 0;
+    let logs = JSON.parse(localStorage.getItem('flower_logs')) || [];
 
     function init() {
-        document.getElementById('totalCount').innerText = count;
-        renderRewards();
+        updateDisplay();
+        renderLogs();
     }
 
-    function addFlower() {
-        count++;
+    function changeFlower(amt) {
+        if (count + amt < 0) return;
+        count += amt;
+        if (amt > 0) triggerConfetti();
         updateDisplay();
     }
 
     function updateDisplay() {
         document.getElementById('totalCount').innerText = count;
         localStorage.setItem('flower_count', count);
-        renderRewards(); // 刷新按钮状态
+        
+        const badge = document.getElementById('levelBadge');
+        if (count <= 10) badge.innerText = "🌱 初级乖乖宝贝";
+        else if (count <= 30) badge.innerText = "⭐ 模范乖乖宝贝";
+        else if (count < 50) badge.innerText = "👑 资深乖乖宝贝";
+        else badge.innerText = "🌌 银河系最最可爱的加盐宝贝";
+
+        renderRewards(); 
     }
 
     function renderRewards() {
         const container = document.getElementById('rewardContainer');
         container.innerHTML = '';
-
         rewardData.forEach((item, index) => {
             const card = document.createElement('div');
             card.className = 'reward-card';
-            
             const isDisabled = count < item.cost || item.locked;
-            const btnText = item.locked ? "隐藏功能" : "立即兑换";
-
             card.innerHTML = `
                 <div class="reward-header">
-                    <span style="font-weight:bold; color:var(--dark-pink)">奖励项目 #${index + 1}</span>
-                    <span class="reward-cost">需要 ${item.cost} 朵 🌸</span>
+                    <span style="font-weight:bold; color:var(--dark-pink)">项目 #${index + 1}</span>
+                    <span class="reward-cost">需要 ${item.cost} 🌸</span>
                 </div>
-                <div class="reward-content">${item.text}</div>
-                <button class="btn-redeem ${item.locked ? 'special-btn' : ''}" 
-                        ${isDisabled ? 'disabled' : ''} 
-                        onclick="redeem(${item.cost}, '${item.text.substring(0,10)}')">
-                    ${btnText}
+                <div style="font-size:0.95rem; color:#555;">${item.text}</div>
+                <button class="btn-redeem" ${isDisabled ? 'disabled' : ''} 
+                        onclick="redeem(${item.cost}, ${index + 1})">
+                    ${item.locked ? '隐藏中' : '立即兑换'}
                 </button>
             `;
             container.appendChild(card);
         });
     }
 
-    function redeem(cost, shortTitle) {
+    function redeem(cost, id) {
         if (count >= cost) {
-            count -= cost;
-            updateDisplay();
-            alert("✨ 兑换成功！\n\n请截图找淇淇兑换哦~ \n奖励内容：" + shortTitle + "...");
+            if(confirm(`确定要兑换奖励项目 #${id} 吗？`)) {
+                count -= cost;
+                addLog(id);
+                updateDisplay();
+                triggerConfetti();
+            }
         }
+    }
+
+    // 记录逻辑更新：添加唯一ID
+    function addLog(id) {
+        const now = new Date();
+        const timeStr = `${now.getFullYear()}/${now.getMonth()+1}/${now.getDate()} ${now.getHours()}:${String(now.getMinutes()).padStart(2, '0')}`;
+        const logEntry = {
+            id: Date.now(), // 唯一ID用于删除
+            time: timeStr,
+            content: `加盐宝贝兑换了奖励项目 #${id}`
+        };
+        logs.unshift(logEntry);
+        localStorage.setItem('flower_logs', JSON.stringify(logs));
+        renderLogs();
+    }
+
+    // 删除记录功能
+    function deleteLog(logId) {
+        if(confirm("确定要删除这条记录吗？(这不会退回小红花哦)")) {
+            logs = logs.filter(log => log.id !== logId);
+            localStorage.setItem('flower_logs', JSON.stringify(logs));
+            renderLogs();
+        }
+    }
+
+    function renderLogs() {
+        const logList = document.getElementById('logList');
+        if (logs.length === 0) {
+            logList.innerHTML = '<div style="text-align:center; color:#ccc; padding:20px; font-size:0.8rem;">还没有记录哦~</div>';
+            return;
+        }
+        
+        logList.innerHTML = logs.map(item => `
+            <div class="log-item">
+                <div class="log-content">
+                    <span>${item.content}</span>
+                    <span class="log-time">${item.time}</span>
+                </div>
+                <button class="btn-delete-log" onclick="deleteLog(${item.id})" title="删除记录">✕</button>
+            </div>
+        `).join('');
+    }
+
+    function triggerConfetti() {
+        confetti({
+            particleCount: 100,
+            spread: 70,
+            origin: { y: 0.6 },
+            colors: ['#ffafbd', '#ff6b81', '#ffffff']
+        });
     }
 
     init();
