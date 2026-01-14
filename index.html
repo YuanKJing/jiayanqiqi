@@ -1,10 +1,12 @@
+
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🌸 淇淇与加盐宝贝的小红花仓库 🌸</title>
+    <title>🌸 淇淇与加盐的小红花仓库 🌸</title>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+
     <style>
         :root {
             --main-pink: #ffafbd;
@@ -14,7 +16,7 @@
         }
 
         body {
-            font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            font-family: 'PingFang SC','Microsoft YaHei',sans-serif;
             background-color: var(--bg-pink);
             background-image: radial-gradient(#ffcad4 0.5px, transparent 0.5px);
             background-size: 20px 20px;
@@ -26,239 +28,141 @@
             align-items: center;
         }
 
-        .container {
-            width: 100%;
-            max-width: 600px;
-        }
+        .container { width:100%; max-width:600px; }
 
-        /* 顶部看板 */
         .header-card {
-            background: white;
-            border-radius: 30px;
-            padding: 30px 20px;
-            text-align: center;
-            box-shadow: 0 10px 30px rgba(255, 175, 189, 0.4);
-            margin-bottom: 25px;
-            position: relative;
-            border: 3px solid var(--main-pink);
+            background:white;
+            border-radius:30px;
+            padding:30px 20px;
+            text-align:center;
+            box-shadow:0 10px 30px rgba(255,175,189,.4);
+            border:3px solid var(--main-pink);
         }
 
-        .main-flower-img {
-            font-size: 60px;
-            margin-bottom: 10px;
-            display: block;
-            animation: floating 3s ease-in-out infinite;
-        }
-
-        .title {
-            color: var(--dark-pink);
-            font-size: 1.5rem;
-            font-weight: bold;
-            margin-bottom: 5px;
-        }
-
+        .main-flower-img { font-size:60px; animation:floating 3s infinite; }
+        .title { color:var(--dark-pink); font-size:1.5rem; font-weight:bold; }
         .level-title {
-            display: inline-block;
-            background: linear-gradient(135deg, #fff0f3, #ffe0e6);
-            color: var(--dark-pink);
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-size: 0.9rem;
-            font-weight: bold;
-            margin-bottom: 10px;
+            display:inline-block;
+            background:linear-gradient(135deg,#fff0f3,#ffe0e6);
+            color:var(--dark-pink);
+            padding:5px 15px;
+            border-radius:20px;
+            font-size:.9rem;
+            font-weight:bold;
         }
 
-        .flower-display {
-            display: flex;
-            justify-content: center;
-            align-items: baseline;
-            margin: 10px 0;
-        }
+        .flower-display { display:flex; justify-content:center; align-items:baseline; }
+        .flower-count { font-size:5rem; font-weight:900; color:var(--dark-pink); }
+        .flower-unit { margin-left:10px; color:var(--main-pink); font-weight:bold; }
 
-        .flower-count {
-            font-size: 5rem;
-            font-weight: 900;
-            color: var(--dark-pink);
-            text-shadow: 3px 3px 0px #ffe0e6;
-        }
-
-        .flower-unit {
-            font-size: 1.2rem;
-            color: var(--main-pink);
-            margin-left: 10px;
-            font-weight: bold;
-        }
-
-        .btn-group {
-            display: flex;
-            gap: 15px;
-            justify-content: center;
-            margin-top: 15px;
-        }
-
+        .btn-group { display:flex; gap:15px; margin-top:15px; }
         .btn-add {
-            background: linear-gradient(135deg, var(--main-pink), var(--dark-pink));
-            color: white;
-            border: none;
-            padding: 12px 30px;
-            border-radius: 50px;
-            font-size: 1.1rem;
-            font-weight: bold;
-            cursor: pointer;
-            box-shadow: 0 5px 15px rgba(255, 107, 129, 0.3);
+            background:linear-gradient(135deg,var(--main-pink),var(--dark-pink));
+            color:white;border:none;padding:12px 30px;border-radius:50px;
+            font-weight:bold;cursor:pointer;
         }
-
         .btn-reduce {
-            background: white;
-            color: var(--main-pink);
-            border: 2px solid var(--main-pink);
-            padding: 12px 20px;
-            border-radius: 50px;
-            font-size: 0.9rem;
-            font-weight: bold;
-            cursor: pointer;
+            background:white;color:var(--main-pink);
+            border:2px solid var(--main-pink);
+            padding:12px 20px;border-radius:50px;font-weight:bold;
         }
 
-        /* 兑换记录 */
         .log-section {
-            background: white;
-            border-radius: 20px;
-            padding: 20px;
-            margin: 20px 0;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-        }
-
-        .log-list {
-            max-height: 250px;
-            overflow-y: auto;
-            margin-top: 10px;
+            background:white;border-radius:20px;padding:20px;margin-top:20px;
+            box-shadow:0 5px 15px rgba(0,0,0,.05);
         }
 
         .log-item {
-            font-size: 0.85rem;
-            padding: 10px 0;
-            border-bottom: 1px dashed #eee;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            cursor: pointer;
+            display:flex;justify-content:space-between;align-items:center;
+            border-bottom:1px dashed #eee;padding:10px 0;font-size:.85rem;
         }
 
-        .log-item:hover { background-color: #fff9fa; }
+        .log-content { display:flex;flex-direction:column;gap:4px; }
+        .log-time { color:#bbb;font-size:.75rem; }
 
-        .log-left { display: flex; flex-direction: column; gap: 4px; flex: 1; }
-        .log-time { color: #bbb; font-size: 0.75rem; }
-        
-        /* 右侧小缩略图 */
-        .log-right { display: flex; align-items: center; gap: 10px; }
-        .thumb-preview {
-            width: 40px;
-            height: 40px;
-            border-radius: 8px;
-            object-fit: cover;
-            border: 1px solid #eee;
-            background: #f9f9f9;
+        .btn-delete-log {
+            background:#fff0f3;color:var(--dark-pink);
+            border:none;width:24px;height:24px;border-radius:50%;
+            cursor:pointer;
         }
 
-        /* 详情弹窗 */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.5);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .modal-content {
-            background: white;
-            width: 90%;
-            max-width: 500px;
-            border-radius: 25px;
-            padding: 20px;
-            max-height: 80vh;
-            overflow-y: auto;
-            position: relative;
-        }
-
-        .modal-header {
-            color: var(--dark-pink);
-            font-weight: bold;
-            margin-bottom: 15px;
-            text-align: center;
-        }
-
-        .image-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-            margin-bottom: 15px;
-        }
-
-        .grid-img-wrap {
-            aspect-ratio: 1;
-            position: relative;
-            border-radius: 10px;
-            overflow: hidden;
-            background: #eee;
-        }
-
-        .grid-img-wrap img { width: 100%; height: 100%; object-fit: cover; }
-
-        .btn-remove-img {
-            position: absolute; top: 2px; right: 2px;
-            background: rgba(0,0,0,0.5); color: white; border: none;
-            border-radius: 50%; width: 18px; height: 18px; font-size: 10px;
-        }
-
-        .upload-btn {
-            border: 2px dashed var(--main-pink);
-            color: var(--main-pink);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 20px;
-            cursor: pointer;
-        }
-
-        .note-area {
-            width: 100%;
-            height: 80px;
-            border: 1px solid #ffe0e6;
-            border-radius: 10px;
-            padding: 10px;
-            box-sizing: border-box;
-            font-family: inherit;
-            margin-top: 10px;
-            outline: none;
-        }
-
-        .modal-footer {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 20px;
+        .reward-section-title {
+            text-align:center;color:var(--dark-pink);
+            margin:30px 0 15px;font-size:1.2rem;
         }
 
         .reward-card {
-            background: white; border-radius: 20px; padding: 20px; margin-bottom: 15px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.05); border-left: 8px solid var(--main-pink);
+            background:white;border-radius:20px;padding:20px;margin-bottom:15px;
+            box-shadow:0 5px 15px rgba(0,0,0,.05);
+            border-left:8px solid var(--main-pink);
         }
 
-        @keyframes floating { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+        .reward-header { display:flex;justify-content:space-between; }
+        .reward-cost {
+            background:#fff0f3;color:var(--dark-pink);
+            padding:5px 15px;border-radius:20px;font-weight:bold;
+        }
+
+        .btn-redeem {
+            align-self:flex-end;margin-top:15px;
+            background:var(--main-pink);color:white;border:none;
+            padding:8px 20px;border-radius:12px;font-weight:bold;
+        }
+
+        .btn-redeem:disabled { background:#eee;color:#bbb; }
+
+        /* ===== 图片弹窗 ===== */
+        .modal {
+            position:fixed;inset:0;background:rgba(0,0,0,.6);
+            display:none;justify-content:center;align-items:center;z-index:999;
+        }
+
+        .modal-box {
+            background:white;border-radius:20px;
+            width:90%;max-width:360px;padding:15px;
+        }
+
+        .modal-image-wrapper { position:relative; }
+        .modal-image-wrapper img {
+            width:100%;max-height:240px;object-fit:contain;border-radius:12px;
+        }
+
+        .img-delete-btn {
+            position:absolute;top:6px;right:6px;
+            background:rgba(0,0,0,.6);color:white;
+            border:none;border-radius:50%;width:22px;height:22px;
+        }
+
+        .slider-controls {
+            display:flex;justify-content:space-between;margin:10px 0;
+        }
+
+        .slider-btn {
+            background:#fff0f3;border:none;border-radius:10px;
+            padding:6px 12px;color:var(--dark-pink);
+        }
+
+        @keyframes floating {
+            0%{transform:translateY(0)}
+            50%{transform:translateY(-5px)}
+            100%{transform:translateY(0)}
+        }
     </style>
 </head>
+
 <body>
 
 <div class="container">
     <div class="header-card">
         <span class="main-flower-img">🌸</span>
-        <div class="title">淇淇与加盐的小红花仓库</div>
-        <div id="levelBadge" class="level-title">初级乖乖宝贝</div>
+        <div class="title">淇淇与加盐宝贝的小红花仓库</div>
+        <div id="levelBadge" class="level-title"></div>
+
         <div class="flower-display">
             <div class="flower-count" id="totalCount">0</div>
             <div class="flower-unit">朵小红花</div>
         </div>
+
         <div class="btn-group">
             <button class="btn-reduce" onclick="changeFlower(-1)">减少 🌸 -1</button>
             <button class="btn-add" onclick="changeFlower(1)">点击获得 🌸 +1</button>
@@ -266,35 +170,37 @@
     </div>
 
     <div class="log-section">
-        <div style="font-weight: bold; color: var(--dark-pink); display: flex; justify-content: space-between;">
-            <span>📜 兑换记录 <small style="font-weight: normal; font-size: 0.7rem; color: #999;">(点击可存照片及文字)</small></span>
-        </div>
-        <div id="logList" class="log-list"></div>
+        <div style="font-weight:bold;color:var(--dark-pink)">📜 兑换记录</div>
+        <div id="logList"></div>
     </div>
 
-    <div class="reward-section-title" style="text-align: center; color: var(--dark-pink); margin: 30px 0 15px;">—— 奖励兑换区 ——</div>
+    <div class="reward-section-title">—— 奖励兑换区 ——</div>
     <div id="rewardContainer"></div>
 </div>
 
-<div id="detailModal" class="modal">
-    <div class="modal-content">
-        <div class="modal-header" id="modalTitle">项目详情</div>
-        <div class="image-grid" id="imageGrid">
-            </div>
-        <input type="file" id="fileInput" hidden multiple accept="image/*" onchange="handleFileUpload(event)">
-        <div style="font-size: 0.8rem; color: #888;">上传照片记录甜蜜时刻吧~</div>
-        
-        <textarea id="noteArea" class="note-area" placeholder="写点什么吧...比如那天的奶茶好不好喝？"></textarea>
-        
-        <div class="modal-footer">
-            <button onclick="closeModal()" style="border:none; background:#eee; padding:8px 20px; border-radius:10px;">取消</button>
-            <button onclick="saveDetail()" style="border:none; background:var(--dark-pink); color:white; padding:8px 20px; border-radius:10px;">保存记录</button>
+<!-- 图片弹窗 -->
+<div id="imgModal" class="modal">
+    <div class="modal-box">
+        <div class="modal-image-wrapper">
+            <img id="modalImg">
+            <button class="img-delete-btn" onclick="deleteCurrentImage()">✕</button>
         </div>
+        <div class="slider-controls">
+            <button class="slider-btn" onclick="prevImg()">←</button>
+            <button class="slider-btn" onclick="nextImg()">→</button>
+        </div>
+        <button class="slider-btn" style="width:100%" onclick="closeModal()">关闭</button>
     </div>
 </div>
-
+<div class="rules-card">
+        <span style="color:var(--dark-pink); font-weight:bold; display:block; text-align:center; margin-bottom:10px;">🌸【隐藏规则】🌸</span>
+        小红花可以累计、不清零，但是有可能会触发扣除机制哦~<br>
+        特殊表现优秀时，淇淇有权额外奖励小红花<br>
+        本制度长期有效，解释权归淇淇 & 加盐宝贝共同所有
+    </div>
 <script>
-    const rewardData = [
+/* ===== 原有逻辑 ===== */
+const rewardData = [
         { cost: 1, text: "一次小奖励！可以让淇淇给加盐宝贝买好喝的奶茶，好吃的小蛋糕，面包等等~" },
         { cost: 2, text: "指定一次“今天你说了算”，可以让淇淇给加盐宝贝完成一件事情，不做限制哦！或者也可以在约会的时候可以指定一次今天去哪吃，或者今天看什么，或者想去抓娃娃啊，逛美食街啊，想看的电影啊，以及抖音刷到了有很想去的店然后想叫淇淇一起去打卡呀之类的，只要兑换，见面一定满足~" },
         { cost: 5, text: "一次小礼物~包括但不限于想要的玩偶，情侣小礼物呀~（对戒/手绳/钥匙扣）之类的" },
@@ -312,156 +218,119 @@
         { cost: 20, text: "一个大奖励，非任何节日也可以兑换，给加盐宝贝购物车内随机一件想要的但是没舍得买的淇淇报销！或者可以兑换物品，淇淇给加盐宝贝买，如我想要个手链，我想要个首饰，想要个戒指~之类的，或者有喜欢的衣服但是还没买的，报销！" },
         { cost: 30, text: "实现加盐宝贝一个心愿，不做限制。" }
     ];
+let count = parseInt(localStorage.getItem('flower_count')) || 0;
+let logs = JSON.parse(localStorage.getItem('flower_logs')) || [];
 
-    let count = parseInt(localStorage.getItem('flower_count')) || 0;
-    let logs = JSON.parse(localStorage.getItem('flower_logs')) || [];
-    let currentLogId = null;
+/* ===== 图片弹窗数据 ===== */
+let modalImages = [
+    "https://picsum.photos/400/300?1",
+    "https://picsum.photos/400/300?2"
+];
+let currentImgIndex = 0;
 
-    function init() {
-        updateDisplay();
-        renderLogs();
-    }
+function init() {
+    updateDisplay();
+    renderLogs();
+}
+init();
 
-    function changeFlower(amt) {
-        if (count + amt < 0) return;
-        count += amt;
-        if (amt > 0) triggerConfetti();
-        updateDisplay();
-    }
+function changeFlower(n) {
+    if (count + n < 0) return;
+    count += n;
+    triggerConfetti();
+    updateDisplay();
+}
 
-    function updateDisplay() {
-        document.getElementById('totalCount').innerText = count;
-        localStorage.setItem('flower_count', count);
-        const badge = document.getElementById('levelBadge');
-        if (count <= 10) badge.innerText = "🌱 初级乖乖宝贝";
-        else if (count <= 30) badge.innerText = "⭐ 模范乖乖宝贝";
-        else badge.innerText = "🌌 银河系最最可爱的加盐宝贝";
-        renderRewards(); 
-    }
+function updateDisplay() {
+    document.getElementById('totalCount').innerText = count;
+    document.getElementById('levelBadge').innerText =
+        count <= 10 ? "🌱 初级乖乖宝贝" :
+        count <= 30 ? "⭐ 模范乖乖宝贝" :
+        count < 50 ? "👑 资深乖乖宝贝" :
+        "🌌 银河系最最可爱的加盐宝贝";
+    localStorage.setItem('flower_count', count);
+    renderRewards();
+}
 
-    function renderRewards() {
-        const container = document.getElementById('rewardContainer');
-        container.innerHTML = rewardData.map((item, index) => `
-            <div class="reward-card">
-                <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
-                    <span style="font-weight:bold; color:var(--dark-pink)">#${index+1}</span>
-                    <span style="background:#fff0f3; color:var(--dark-pink); padding:2px 10px; border-radius:20px; font-size:0.8rem;">${item.cost} 🌸</span>
-                </div>
-                <div style="font-size:0.9rem; color:#666;">${item.text}</div>
-                <button class="btn-add" style="margin-top:10px; font-size:0.8rem; padding:5px 15px;" 
-                        ${count < item.cost ? 'disabled style="filter:grayscale(1)"' : ''} 
-                        onclick="redeem(${item.cost}, ${index+1})">立即兑换</button>
+function renderRewards() {
+    const c = document.getElementById('rewardContainer');
+    c.innerHTML = '';
+    rewardData.forEach((r,i)=>{
+        c.innerHTML += `
+        <div class="reward-card">
+            <div class="reward-header">
+                <span>项目 #${i+1}</span>
+                <span class="reward-cost">${r.cost} 🌸</span>
             </div>
-        `).join('');
-    }
+            <div>${r.text}</div>
+            <button class="btn-redeem" ${count<r.cost?'disabled':''}
+                onclick="redeem(${r.cost})">立即兑换</button>
+        </div>`;
+    });
+}
 
-    function redeem(cost, id) {
-        if(confirm(`确定兑换项目 #${id} 吗？`)) {
-            count -= cost;
-            const logEntry = {
-                id: Date.now(),
-                time: new Date().toLocaleString(),
-                content: `加盐宝贝兑换了项目 #${id}`,
-                images: [],
-                note: ""
-            };
-            logs.unshift(logEntry);
-            localStorage.setItem('flower_logs', JSON.stringify(logs));
-            updateDisplay();
-            renderLogs();
-        }
-    }
+function redeem(cost){
+    count -= cost;
+    logs.unshift({
+        id:Date.now(),
+        time:new Date().toLocaleString(),
+        content:`兑换 ${cost} 🌸`
+    });
+    localStorage.setItem('flower_logs',JSON.stringify(logs));
+    updateDisplay();
+    renderLogs();
+}
 
-    function renderLogs() {
-        const list = document.getElementById('logList');
-        if (logs.length === 0) {
-            list.innerHTML = '<div style="text-align:center; color:#ccc; padding:20px;">暂无记录</div>';
-            return;
-        }
-        list.innerHTML = logs.map(item => `
-            <div class="log-item" onclick="openDetail(${item.id})">
-                <div class="log-left">
-                    <span>${item.content}</span>
-                    <span class="log-time">${item.time}</span>
-                </div>
-                <div class="log-right">
-                    ${item.images.length > 0 ? `<img src="${item.images[0]}" class="thumb-preview">` : '<div class="thumb-preview" style="display:flex;align-items:center;justify-content:center;font-size:10px;color:#ddd">无图</div>'}
-                    <button onclick="event.stopPropagation(); deleteLog(${item.id})" style="border:none; background:none; color:#ffcbd1;">✕</button>
-                </div>
+/* ===== 日志 ===== */
+function renderLogs(){
+    const l = document.getElementById('logList');
+    if(!logs.length){ l.innerHTML='还没有记录哦~'; return; }
+    l.innerHTML = logs.map(i=>`
+        <div class="log-item">
+            <div class="log-content">
+                <span>${i.content}</span>
+                <span class="log-time">${i.time}</span>
             </div>
-        `).join('');
-    }
+            <button class="btn-delete-log" onclick="deleteLog(${i.id})">✕</button>
+        </div>`).join('');
+}
 
-    function deleteLog(id) {
-        if(confirm("确定删除记录吗？")) {
-            logs = logs.filter(l => l.id !== id);
-            localStorage.setItem('flower_logs', JSON.stringify(logs));
-            renderLogs();
-        }
-    }
+function deleteLog(id){
+    logs = logs.filter(l=>l.id!==id);
+    localStorage.setItem('flower_logs',JSON.stringify(logs));
+    renderLogs();
+}
 
-    /* 弹窗逻辑 */
-    function openDetail(id) {
-        currentLogId = id;
-        const log = logs.find(l => l.id === id);
-        document.getElementById('modalTitle').innerText = log.content;
-        document.getElementById('noteArea').value = log.note || "";
-        renderImageGrid(log.images);
-        document.getElementById('detailModal').style.display = 'flex';
-    }
+/* ===== 图片弹窗逻辑 ===== */
+function openModal(index=0){
+    currentImgIndex=index;
+    document.getElementById('imgModal').style.display='flex';
+    renderModalImage();
+}
+function closeModal(){
+    document.getElementById('imgModal').style.display='none';
+}
+function renderModalImage(){
+    document.getElementById('modalImg').src = modalImages[currentImgIndex];
+}
+function prevImg(){
+    currentImgIndex=(currentImgIndex-1+modalImages.length)%modalImages.length;
+    renderModalImage();
+}
+function nextImg(){
+    currentImgIndex=(currentImgIndex+1)%modalImages.length;
+    renderModalImage();
+}
+function deleteCurrentImage(){
+    modalImages.splice(currentImgIndex,1);
+    if(!modalImages.length){ closeModal(); return; }
+    currentImgIndex%=modalImages.length;
+    renderModalImage();
+}
 
-    function closeModal() {
-        document.getElementById('detailModal').style.display = 'none';
-    }
-
-    function renderImageGrid(images) {
-        const grid = document.getElementById('imageGrid');
-        let html = images.map((img, index) => `
-            <div class="grid-img-wrap">
-                <img src="${img}">
-                <button class="btn-remove-img" onclick="removeImg(${index})">✕</button>
-            </div>
-        `).join('');
-        
-        if (images.length < 9) { // 最多传9张
-            html += `<div class="grid-img-wrap upload-btn" onclick="document.getElementById('fileInput').click()">+</div>`;
-        }
-        grid.innerHTML = html;
-    }
-
-    function handleFileUpload(e) {
-        const files = Array.from(e.target.files);
-        const log = logs.find(l => l.id === currentLogId);
-        
-        files.forEach(file => {
-            const reader = new FileReader();
-            reader.onload = (event) => {
-                log.images.push(event.target.result);
-                renderImageGrid(log.images);
-            };
-            reader.readAsDataURL(file);
-        });
-    }
-
-    function removeImg(idx) {
-        const log = logs.find(l => l.id === currentLogId);
-        log.images.splice(idx, 1);
-        renderImageGrid(log.images);
-    }
-
-    function saveDetail() {
-        const log = logs.find(l => l.id === currentLogId);
-        log.note = document.getElementById('noteArea').value;
-        localStorage.setItem('flower_logs', JSON.stringify(logs));
-        renderLogs();
-        closeModal();
-    }
-
-    function triggerConfetti() {
-        confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 }, colors: ['#ffafbd', '#ff6b81', '#ffffff'] });
-    }
-
-    init();
+function triggerConfetti(){
+    confetti({particleCount:80,spread:60,origin:{y:.6}});
+}
 </script>
 
 </body>
