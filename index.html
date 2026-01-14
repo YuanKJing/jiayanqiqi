@@ -431,6 +431,17 @@
 
         input.click();
     }
+    function editNote(logId) {
+        const log = logs.find(l => l.id === logId);
+        if (!log) return;
+
+        const text = prompt("给这一条记录写点什么吧～", log.note || "");
+        if (text === null) return; // 用户点了取消
+
+        log.note = text.trim();
+        localStorage.setItem('flower_logs', JSON.stringify(logs));
+        renderLogs();
+    }
 
     function renderLogs() {
         const logList = document.getElementById('logList');
@@ -442,22 +453,35 @@
         logList.innerHTML = logs.map(item => `
     <div class="log-item">
         <div class="log-content">
-            <span>${item.content}</span>
-            <span class="log-time">${item.time}</span>
+    <span>${item.content}</span>
+    <span class="log-time">${item.time}</span>
 
-            ${item.image ? `
-                <div class="log-photo">
-                    <img src="${item.image}" onclick="window.open('${item.image}')">
-                </div>
-            ` : `
-                <button class="btn-redeem" style="font-size:0.7rem;padding:4px 10px;margin-top:4px;"
-                    onclick="uploadImage(${item.id})">
-                    上传照片
-                </button>
-            `}
+    ${item.note ? `
+        <div style="font-size:0.8rem;color:#888;background:#fff0f3;
+                    padding:6px 10px;border-radius:10px;margin-top:4px;">
+            💬 ${item.note}
         </div>
+    ` : ''}
 
-        <button class="btn-delete-log" onclick="deleteLog(${item.id})" title="删除记录">✕</button>
+    ${item.image ? `
+        <div class="log-photo">
+            <img src="${item.image}" onclick="window.open('${item.image}')">
+        </div>
+    ` : `
+        <button class="btn-redeem"
+            style="font-size:0.7rem;padding:4px 10px;margin-top:4px;"
+            onclick="uploadImage(${item.id})">
+            上传照片
+        </button>
+    `}
+
+    <button class="btn-redeem"
+        style="font-size:0.7rem;padding:4px 10px;margin-top:4px;"
+        onclick="editNote(${item.id})">
+        ${item.note ? '编辑文字' : '添加文字'}
+    </button>
+</div>
+        <button class="btn-delete-log" onclick="deleteLog(${item.id})" title="删除记录">×</button>
     </div>
 `).join('');
 
